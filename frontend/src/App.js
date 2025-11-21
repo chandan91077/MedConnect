@@ -1,53 +1,118 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'sonner';
+import useAuthStore from './store/authStore';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import Navbar from './components/Navbar';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+const queryClient = new QueryClient();
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+// Protected Route Component
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { isAuthenticated, user } = useAuthStore();
 
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user?.role)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
 
 function App() {
   return (
-    <div className="App">
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <div className="App min-h-screen">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            
+            {/* Patient Routes - To be implemented */}
+            <Route
+              path="/patient/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                  <div className="min-h-screen flex items-center justify-center">
+                    <div className="text-center">
+                      <h1 className="text-4xl font-bold mb-4">Patient Dashboard</h1>
+                      <p className="text-gray-600">Coming soon...</p>
+                    </div>
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Doctor Routes - To be implemented */}
+            <Route
+              path="/doctor/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                  <div className="min-h-screen flex items-center justify-center">
+                    <div className="text-center">
+                      <h1 className="text-4xl font-bold mb-4">Doctor Dashboard</h1>
+                      <p className="text-gray-600">Coming soon...</p>
+                    </div>
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/doctor/onboarding"
+              element={
+                <ProtectedRoute allowedRoles={['doctor']}>
+                  <div className="min-h-screen flex items-center justify-center">
+                    <div className="text-center">
+                      <h1 className="text-4xl font-bold mb-4">Doctor Onboarding</h1>
+                      <p className="text-gray-600">Complete your profile to start accepting patients</p>
+                    </div>
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Admin Routes - To be implemented */}
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <div className="min-h-screen flex items-center justify-center">
+                    <div className="text-center">
+                      <h1 className="text-4xl font-bold mb-4">Admin Dashboard</h1>
+                      <p className="text-gray-600">Coming soon...</p>
+                    </div>
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Doctors List - Public */}
+            <Route
+              path="/doctors"
+              element={
+                <div className="min-h-screen flex items-center justify-center">
+                  <div className="text-center">
+                    <h1 className="text-4xl font-bold mb-4">Browse Doctors</h1>
+                    <p className="text-gray-600">Coming soon...</p>
+                  </div>
+                </div>
+              }
+            />
+          </Routes>
+          <Toaster position="top-right" richColors />
+        </div>
       </BrowserRouter>
-    </div>
+    </QueryClientProvider>
   );
 }
 
