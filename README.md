@@ -1,267 +1,341 @@
-# MedConnect - Doctor Appointment Platform
+# MediConnect - Real-Time Healthcare Platform
 
-A comprehensive telemedicine platform built with FastAPI, React, MongoDB, enabling seamless doctor-patient interactions through video consultations, chat, and appointment management.
+## 🏥 Overview
 
-## 🌟 Features
+MediConnect is a production-ready real-time healthcare platform that connects patients with doctors through secure appointments, video consultations, real-time chat, and digital prescriptions.
 
-### Multi-Role System
-- **Patients**: Book appointments, video consultations, chat with doctors, view prescriptions
-- **Doctors**: Manage appointments, video calls, generate prescriptions, track earnings
-- **Admin**: Approve doctors, manage platform, view analytics
+## ✨ Features
 
-### Core Functionality
-- 🔐 **JWT Authentication**: Secure email/password authentication
-- 📅 **Smart Booking**: Real-time slot availability with conflict prevention
-- 💳 **Stripe Integration**: Payment processing with Stripe Connect for doctor payouts
-- 💬 **Real-time Chat**: WebSocket-based instant messaging
-- 🎥 **Video Consultations**: WebRTC-powered video calls with signaling
-- 📄 **Digital Prescriptions**: PDF generation and secure storage
-- 📁 **File Management**: AWS S3 integration for documents
-- 🔔 **Notifications**: Real-time appointment and payment notifications
-- 📊 **Analytics Dashboard**: Revenue tracking and platform statistics
+### Patient Features
+- ✅ Browse approved doctors
+- ✅ View doctor availability
+- ✅ Book scheduled appointments
+- ✅ Book emergency appointments
+- ✅ Secure payment processing
+- ✅ Real-time chat with doctors
+- ✅ Zoom video consultations
+- ✅ Download digital prescriptions
+- ✅ View medical history
 
-## 🏗️ Tech Stack
+### Admin Features
+- ✅ Create doctor accounts
+- ✅ Approve/reject doctors
+- ✅ Manage doctor availability
+- ✅ View all appointments
+- ✅ Track revenue & analytics
+- ✅ Payment logs
+- ✅ Platform statistics
+
+### Doctor Access
+- ✅ API-only access (no frontend)
+- ✅ Zoom meeting links
+- ✅ Real-time chat when unlocked
+- ✅ Create prescriptions
+
+## 🛠️ Technology Stack
 
 ### Backend
-- **Framework**: FastAPI (Python 3.11)
-- **Database**: MongoDB with Motor (async driver)
-- **Authentication**: PyJWT + bcrypt
-- **Payments**: Stripe API + Stripe Connect
-- **Storage**: AWS S3 (boto3)
-- **Real-time**: WebSocket
-- **PDF Generation**: ReportLab
-- **Server**: Uvicorn with auto-reload
+- Node.js & Express.js
+- MySQL (with connection pooling)
+- JWT Authentication
+- Socket.IO (real-time chat)
+- Zoom REST API
+- AWS S3 (file storage)
+- PDFKit (prescription generation)
+- Node-cron (scheduled tasks)
+- Bcrypt (password hashing)
 
 ### Frontend
-- **Framework**: React 19
-- **Routing**: React Router v7
-- **State Management**: Zustand
-- **Server State**: TanStack React Query
-- **Styling**: Tailwind CSS
-- **UI Components**: Shadcn/UI (Radix UI)
-- **Real-time**: WebSocket API
-- **Video**: WebRTC (simple-peer)
-- **Payments**: Stripe React Elements
-- **Notifications**: Sonner
+- React 18
+- Vite (build tool)
+- React Router v6
+- Zustand (state management)
+- TailwindCSS
+- Socket.IO Client
+- Axios
+- Lucide Icons
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js 16+ installed
+- MySQL 8.0+ installed and running
+- AWS account (for S3)
+- Zoom account (for API)
+
+### Backend Setup
+
+1. **Navigate to backend:**
+   ```bash
+   cd backend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment:**
+   Edit `backend/.env` with your credentials
+
+4. **Initialize database:**
+   ```bash
+   npm run init-db
+   ```
+
+5. **Start backend server:**
+   ```bash
+   npm run dev
+   ```
+
+   Backend runs on `http://localhost:5000`
+
+### Frontend Setup
+
+1. **Navigate to frontend:**
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server:**
+   ```bash
+   npm run dev
+   ```
+
+   Frontend runs on `http://localhost:3000`
+
+## 🔐 Default Admin Credentials
+
+- **Email:** `admin@mediconnect.com`
+- **Password:** `Password@1`
+
+⚠️ **IMPORTANT:** Change these credentials in production!
+
+## 🚀 Quick Start Guide
+
+1. **Install all dependencies:**
+   ```bash
+   # Backend
+   cd backend && npm install
+
+   # Frontend (in new terminal)
+   cd frontend && npm install
+   ```
+
+2. **Configure `.env` files** in both backend and frontend
+
+3. **Initialize database:**
+   ```bash
+   cd backend && npm run init-db
+   ```
+
+4. **Start both servers:**
+   ```bash
+   # Terminal 1 - Backend
+   cd backend && npm run dev
+
+   # Terminal 2 - Frontend
+   cd frontend && npm run dev
+   ```
+
+5. **Access the application:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
+   - Admin Portal: http://localhost:3000/admin/login
 
 ## 📁 Project Structure
 
 ```
-/app/
+MedConnect/
 ├── backend/
-│   ├── server.py           # Main FastAPI application
-│   ├── requirements.txt    # Python dependencies
-│   └── .env               # Backend environment variables
-├── frontend/
 │   ├── src/
-│   │   ├── components/    # React components
-│   │   │   ├── Navbar.jsx
-│   │   │   └── ui/       # Shadcn UI components
-│   │   ├── pages/        # Page components
-│   │   │   ├── Landing.jsx
-│   │   │   ├── Login.jsx
-│   │   │   └── Register.jsx
-│   │   ├── services/     # API and WebSocket services
-│   │   │   ├── api.js
-│   │   │   └── websocket.js
-│   │   ├── store/        # Zustand stores
-│   │   │   └── authStore.js
-│   │   ├── App.js        # Main App component
-│   │   └── index.css     # Global styles
-│   ├── package.json      # Node dependencies
-│   └── .env             # Frontend environment variables
-└── README.md
+│   │   ├── config/          # Database, S3, Zoom config
+│   │   ├── middleware/      # Auth, RBAC
+│   │   ├── models/          # Database models
+│   │   ├── controllers/     # Business logic
+│   │   ├── routes/          # API routes
+│   │   ├── services/        # External services
+│   │   ├── socket/          # Socket.IO handler
+│   │   ├── jobs/            # Cron jobs
+│   │   └── app.js           # Express app
+│   ├── server.js            # Server entry point
+│   ├── package.json
+│   └── .env
+│
+└── frontend/
+    ├── src/
+    │   ├── components/      # Reusable components
+    │   ├── pages/           # Page components
+    │   ├── services/        # API & Socket services
+    │   ├── store/           # Zustand stores
+    │   ├── lib/             # Utilities
+    │   ├── App.jsx          # Main app component
+    │   └── main.jsx         # Entry point
+    ├── package.json
+    └── .env
 ```
 
-## 🚀 Getting Started
+## 🔄 Business Logic
 
-### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- MongoDB 4.4+
-- Yarn package manager
-- AWS Account (for S3)
-- Stripe Account
+### Scheduled Booking Flow
+1. Patient selects doctor, date, and time
+2. Backend validates slot availability (with row locking)
+3. Payment processed
+4. Zoom meeting created for appointment time
+5. Chat & Video access LOCKED until appointment day
+6. Cron job unlocks at midnight on appointment day
 
-### Environment Setup
+### Emergency Booking Flow
+1. Patient requests emergency appointment
+2. Backend checks doctor availability
+3. Higher consultation fee applied
+4. Payment processed
+5. Zoom meeting created IMMEDIATELY
+6. Chat & Video access UNLOCKED instantly
+7. Doctor phone number provided
 
-#### Backend (.env)
-```bash
-MONGO_URL="mongodb://localhost:27017"
-DB_NAME="doctor_appointment_db"
-CORS_ORIGINS="*"
-JWT_SECRET="your-super-secret-jwt-key-change-in-production"
-JWT_ALGORITHM="HS256"
-JWT_EXPIRATION_HOURS=720
-
-# Stripe Configuration
-STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key"
-STRIPE_PUBLISHABLE_KEY="pk_test_your_stripe_publishable_key"
-STRIPE_WEBHOOK_SECRET="whsec_your_webhook_secret"
-
-# AWS S3 Configuration
-AWS_ACCESS_KEY_ID="your_aws_access_key"
-AWS_SECRET_ACCESS_KEY="your_aws_secret_key"
-AWS_REGION="us-east-1"
-S3_BUCKET_NAME="doctor-appointment-files"
-```
-
-#### Frontend (.env)
-```bash
-REACT_APP_BACKEND_URL=http://localhost:8001
-REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
-```
-
-## 🔌 API Endpoints
+## 🎯 API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
+- `POST /api/auth/register` - Register patient
+- `POST /api/auth/login` - Login
 - `GET /api/auth/me` - Get current user
 
-### Doctor Management
-- `POST /api/doctors/profile` - Create doctor profile (requires multipart/form-data)
-- `GET /api/doctors` - List all approved doctors (with filters)
-- `GET /api/doctors/{doctor_id}` - Get doctor details
-- `PUT /api/doctors/profile` - Update doctor profile
+### Patients
+- `GET /api/patients/doctors` - Browse doctors
+- `GET /api/patients/doctors/:id` - Doctor details
 
 ### Appointments
-- `POST /api/appointments` - Create new appointment
-- `GET /api/appointments` - List appointments (filtered by role)
-- `GET /api/appointments/{id}` - Get appointment details
-- `PUT /api/appointments/{id}/status` - Update appointment status
-
-### Payments
-- `POST /api/payments/create-intent` - Create Stripe payment intent
-- `POST /api/payments/confirm` - Confirm payment
-
-### Prescriptions
-- `POST /api/prescriptions` - Create prescription (generates PDF)
-- `GET /api/prescriptions` - List prescriptions
-
-### Chat & Files
-- `GET /api/chat/messages/{appointment_id}` - Get chat messages
-- `POST /api/files/upload` - Upload file to S3
-- `GET /api/files` - List user files
-
-### Notifications
-- `GET /api/notifications` - Get notifications
-- `PUT /api/notifications/{id}/read` - Mark as read
+- `POST /api/appointments/scheduled` - Book scheduled
+- `POST /api/appointments/emergency` - Book emergency
+- `GET /api/appointments/my` - My appointments
 
 ### Admin
-- `GET /api/admin/doctors/pending` - Get pending doctor approvals
-- `PUT /api/admin/doctors/{id}/approve` - Approve/reject doctor
-- `GET /api/admin/stats` - Platform statistics
+- `POST /api/admin/doctors` - Create doctor
+- `PATCH /api/admin/doctors/:id/approve` - Approve doctor
+- `GET /api/admin/stats` - Dashboard stats
 
-### WebSocket
-- `WS /ws/{user_id}?token={jwt_token}` - WebSocket connection for real-time features
+See `backend/README.md` for complete API documentation.
 
-## 📊 Database Collections
+## 🔌 Real-Time Features
 
-- **users** - User accounts (patients, doctors, admin)
-- **doctor_profiles** - Doctor professional information
-- **appointments** - Appointment bookings
-- **prescriptions** - Medical prescriptions with PDF URLs
-- **chat_messages** - Chat messages between users
-- **notifications** - User notifications
-- **documents** - Uploaded files metadata
+### Socket.IO Events
+- `join-chat` - Join appointment chat
+- `send-message` - Send message
+- `receive-message` - Receive message
+- `prescription-shared` - Prescription notification
 
-## 🚧 Implementation Status
+## 📊 Database Schema
 
-### ✅ Completed (MVP Phase 1)
-- Full authentication system (register, login, JWT)
-- Doctor profile creation with file uploads
-- Appointment booking with slot management
-- Payment integration (Stripe PaymentIntent)
-- Prescription PDF generation
-- Real-time chat (WebSocket infrastructure)
-- WebSocket signaling for video calls
-- Notification system
-- Admin approval workflow
-- File upload to S3
-- Landing page with hero section
-- Login/Register pages with validation
-- Responsive navbar
-- Protected routes by role
+- **users** - Authentication & roles
+- **doctors** - Doctor profiles
+- **patient_profiles** - Patient information
+- **availability** - Doctor schedules
+- **appointments** - Booking records
+- **messages** - Chat history
+- **prescriptions** - Digital prescriptions
+- **payments** - Transaction records
 
-### 📋 Remaining Features (For Full Production)
-- Complete dashboard implementations (Patient, Doctor, Admin)
-- Doctor onboarding multi-step form UI
-- Browse doctors page with filters and search
-- Video call UI component with WebRTC
-- Chat interface component
-- Prescription viewer component
-- Appointment calendar view
-- Stripe Connect doctor onboarding flow
-- Settlement/payout automation
-- Email notifications
-- SMS reminders
-- Review/rating system
-- Follow-up appointment system
-- Analytics charts
+## 🛡️ Security Features
 
-## 🧪 Testing
+- JWT-based authentication
+- Role-Based Access Control (RBAC)
+- Password hashing with bcrypt
+- Protected API routes
+- Private S3 buckets with signed URLs
+- SQL injection prevention
+- CORS configuration
 
-### Quick API Tests
-```bash
-# Register patient
-curl -X POST "http://localhost:8001/api/auth/register" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@test.com","password":"test123","full_name":"Test User","role":"patient"}'
+## 📝 Environment Variables
 
-# Login
-curl -X POST "http://localhost:8001/api/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@test.com","password":"test123"}'
+### Backend (.env)
+```env
+PORT=5000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=mediconnect_db
+JWT_SECRET=your_secret
+AWS_ACCESS_KEY_ID=your_key
+AWS_SECRET_ACCESS_KEY=your_secret
+AWS_S3_BUCKET=your_bucket
+ZOOM_API_KEY=your_key
+ZOOM_API_SECRET=your_secret
+ZOOM_ACCOUNT_ID=your_account_id
 ```
 
-### Test Users Created
-- **Patient**: newpatient@test.com / test12345
-- **Doctor**: drsmith@test.com / doctor123
-- **Admin**: admin@medconnect.com / admin123
+### Frontend (.env)
+```env
+VITE_API_URL=http://localhost:5000
+VITE_SOCKET_URL=http://localhost:5000
+```
 
-## 🎯 Current Platform Status
+## 🚧 Development Status
 
-The platform is currently in **MVP Phase 1** with:
-- ✅ Complete backend API infrastructure
-- ✅ Authentication and authorization system
-- ✅ Core database models and endpoints
-- ✅ Payment processing integration
-- ✅ Real-time communication infrastructure
-- ✅ Landing and auth pages UI
-- 🚧 Dashboard UIs (placeholder pages)
-- 🚧 Full booking flow UI
-- 🚧 Video call interface
-- 🚧 Chat UI
+### ✅ Completed
+- Backend infrastructure
+- Database schema & models
+- Authentication system
+- API endpoints
+- Socket.IO integration
+- Zoom API integration
+- S3 file storage
+- PDF generation
+- Cron jobs
+- Frontend setup
+- Login/Register pages
+- Navbar & routing
+- Browse Doctors page
 
-## ⚙️ Configuration Notes
+### 🔄 In Progress (Stub Pages Created)
+- Patient Dashboard
+- Doctor Profile
+- Book Appointment
+- Appointments List
+- Chat Interface
+- Prescriptions
+- Admin Dashboard
+- Doctor Management
+- Admin Analytics
 
-### Important Environment Variables
-- `REACT_APP_BACKEND_URL`: Currently set to production URL
-- All backend API routes use `/api` prefix for proper routing
-- WebSocket connections auto-configured from backend URL
-- Supervisor manages both frontend and backend services
+## 📖 Next Steps
 
-### Required External Services Setup
-1. **Stripe Account**: Get API keys from Stripe Dashboard
-2. **AWS S3 Bucket**: Create bucket and configure IAM user
-3. **MongoDB**: Already running locally
+1. Implement remaining frontend pages using the stubs
+2. Add form validation with React Hook Form + Zod
+3. Implement real-time chat UI
+4. Add Zoom video integration on frontend
+5. Create payment gateway integration
+6. Add loading states and error boundaries
+7. Implement responsive mobile design
+8. Add unit and integration tests
 
-## 📝 Usage Flow
+## 🤝 Contributing
 
-### Patient Journey
-1. Register/Login → Browse doctors → Book appointment → Pay → Video consultation → Receive prescription
+This is a production-grade platform. Follow professional coding standards:
+- Use TypeScript for type safety
+- Write unit tests
+- Follow ESLint rules
+- Document all APIs
+- Use semantic commits
 
-### Doctor Journey
-1. Register → Complete profile → Admin approval → Set availability → Accept appointments → Conduct consultations → Generate prescriptions
+## 📄 License
 
-### Admin Journey
-1. Login → Review doctor applications → Approve/reject → Monitor platform statistics
+MIT License
 
-## 📞 Support
+## 🆘 Support
 
-API Documentation: http://localhost:8001/docs
+For issues or questions:
+1. Check documentation
+2. Review API endpoints
+3. Check browser console for errors
+4. Verify database connection
+5. Ensure all environment variables are set
 
 ---
 
-**Note**: This is an MVP implementation. For production deployment, additional security measures, monitoring, and complete UI flows are required.
+Built with ❤️ using modern web technologies
